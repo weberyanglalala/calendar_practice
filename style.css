@@ -2,3 +2,52 @@
 body {
   font-family: 'Noto Sans TC', sans-serif;
 }
+/* 清除bootstrap focus */
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus,
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.date-wrap:hover .add-button {
+  opacity: 1;
+}
+.add-button {
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.date-header-day {
+  font-size: 14px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #ccc;
+}
+.date-header-day.today {
+  background-color: #dc3545;
+  color: #fff;
+}
+.date-body {
+  overflow-y: scroll;
+  height: 80px;
+}
+.date-body::-webkit-scrollbar {
+  width: 0;
+}
+
+@media screen and (max-width: 572px) {
+  .add-button {
+    display: none;
+  }
+  .date-body {
+    display: none;
+  }
+}
