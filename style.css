@@ -29,6 +29,10 @@ button:focus {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  color: #ccc;
+}
+.date-header-day.current-month {
+  color: #000;
   background-color: #ccc;
 }
 .date-header-day.today {

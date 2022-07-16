@@ -154,9 +154,22 @@ function renderCalendar(days) {
     const row = document.createElement('div')
     row.classList.add("row", "g-0")
     week.forEach(weekday => {
+      console.log(weekday.month)
       const col = document.createElement('div')
       col.classList.add("col")
-      col.innerHTML += `
+      if (weekday.month == queryMonth + 1) {
+        col.innerHTML += `
+        <div class="date-wrap border">
+          <div
+            class="date-header d-flex justify-content-center justify-content-md-between align-items-center p-2">
+            <button class="btn p-0 add-button"><i class="bi bi-plus-square"></i></button>
+            <span class="date-header-day current-month">${weekday.day}</span>
+          </div>
+          <div class="date-body">
+          </div>
+        </div>`
+      } else {
+        col.innerHTML += `
         <div class="date-wrap border">
           <div
             class="date-header d-flex justify-content-center justify-content-md-between align-items-center p-2">
@@ -166,6 +179,8 @@ function renderCalendar(days) {
           <div class="date-body">
           </div>
         </div>`
+      }
+
       row.appendChild(col)
     })
     calendar.appendChild(row)
