@@ -3,13 +3,16 @@ let queryDate = new Date(today)
 let queryYear = queryDate.getFullYear()
 let queryMonth = queryDate.getMonth()
 let queryCalendar
+let recordList = []
 
 const currentMonth = document.querySelector('#current-month')
 const currentMonthBtn = document.querySelector('#btn-current-month')
 const prevMonthBtn = document.querySelector('#btn-prev-month')
 const nextMonthBtn = document.querySelector('#btn-next-month')
 const calendar = document.querySelector('#calendar')
-const days = document.querySelectorAll('.date-wrap')
+
+let days = document.querySelectorAll('.date-wrap')
+let addBtns = document.querySelector('.add-button')
 
 window.onload = function () {
   generateHeader(today)
@@ -109,7 +112,7 @@ function switchToWeekday(num) {
 function generateCalendar(year, month) {
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
-  let days = []
+  days = []
   for (let i = 1; i <= lastDay.getDate(); i++) {
     days.push({
       year: lastDay.getFullYear(),
@@ -154,15 +157,14 @@ function renderCalendar(days) {
     const row = document.createElement('div')
     row.classList.add("row", "g-0")
     week.forEach(weekday => {
-      console.log(weekday.month)
       const col = document.createElement('div')
       col.classList.add("col")
       if (weekday.month == queryMonth + 1) {
         col.innerHTML += `
-        <div class="date-wrap border">
+        <div class="date-wrap border" data-id="${weekday.year}-${weekday.month}-${weekday.day}">
           <div
             class="date-header d-flex justify-content-center justify-content-md-between align-items-center p-2">
-            <button class="btn p-0 add-button"><i class="bi bi-plus-square"></i></button>
+            <button class="btn p-0 add-button" data-bs-toggle="modal" data-bs-target="#addNewTodo"><i class="bi bi-plus-square"></i></button>
             <span class="date-header-day current-month">${weekday.day}</span>
           </div>
           <div class="date-body">
@@ -170,19 +172,110 @@ function renderCalendar(days) {
         </div>`
       } else {
         col.innerHTML += `
-        <div class="date-wrap border">
+        <div class="date-wrap border" data-id="${weekday.year}-${weekday.month}-${weekday.day}">
           <div
             class="date-header d-flex justify-content-center justify-content-md-between align-items-center p-2">
-            <button class="btn p-0 add-button"><i class="bi bi-plus-square"></i></button>
+            <button class="btn p-0 add-button" data-bs-toggle="modal" data-bs-target="#addNewTodo"><i class="bi bi-plus-square"></i></button>
             <span class="date-header-day">${weekday.day}</span>
           </div>
           <div class="date-body">
           </div>
         </div>`
       }
-
       row.appendChild(col)
     })
     calendar.appendChild(row)
   } while (arr.length !== 0)
+  days = document.querySelectorAll('.date-wrap')
+  days.forEach(day => {
+    day.addEventListener('click', function () {
+      showDayModal(day)
+    })
+  })
+  addBtns = document.querySelectorAll('.add-button')
+  addBtns.forEach(btn => {
+    btn.addEventListener('click', function (event) {
+      addNewTodo(event, btn)
+    })
+  })
+  let todoSubmitBtn = document.querySelector('#todoSubmit')
+  todoSubmitBtn.addEventListener('click', function () {
+    todoSubmit()
+  })
+  showDayInfo()
 }
+function showDayInfo() {
+  let scheduledDays = []
+  for (let key in localStorage) {
+    if (parseInt(key[0])) scheduledDays.push(key)
+  }
+  scheduledDays.forEach(day => {
+    if ((Number(day.split("-")[1])) - 1 === queryMonth) {
+      let parsedTodos = JSON.parse(localStorage.getItem(String(day)))['todoList']
+      let date = document.querySelector(`[data-id='${day}']`)
+      let dateBody = date.querySelector('.date-body')
+      parsedTodos.forEach(todo => {
+        dateBody.innerHTML += `<button class="btn w-100 text-start">${todo.title}</button>`
+      })
+    }
+  })
+}
+function showDayModal(item) {
+}
+function addNewTodo(event, item) {
+  event.stopPropagation()
+
+  let todoDate = document.querySelector('#todoDate')
+  let todoTime = document.querySelector('#todoTime')
+  let todoColor = document.querySelector('#todoColor')
+  let todoTitle = document.querySelector('#todoTitle')
+
+  todoDate.value = item.parentElement.parentElement.dataset.id
+}
+function todoSubmit() {
+  // recordList = JSON.parse(localStorage)
+  // console.log(recordList)
+  let todoDate = document.querySelector('#todoDate')
+  let todoTime = document.querySelector('#todoTime')
+  let todoColor = document.querySelector('#todoColor')
+  let todoTitle = document.querySelector('#todoTitle')
+
+  if (localStorage.getItem(String(todoDate.value))) {
+    let parsedTodos = JSON.parse(localStorage.getItem(String(todoDate.value)))
+    parsedTodos['todoList'].push({
+      "time": `${todoTime.value}`,
+      "title": `${todoTitle.value}`,
+      "location": "home",
+      "hexcode": `${todoTitle.value}`
+    })
+    localStorage.setItem(`${todoDate.value}`, JSON.stringify(parsedTodos))
+  }
+  else {
+    localStorage.setItem(`${todoDate.value}`, JSON.stringify(
+      {
+        "id": `${todoDate.value}`,
+        "year": 2022,
+        "month": 7,
+        "day": 6,
+        "todoList": [
+          {
+            "time": `${todoTime.value}`,
+            "title": `${todoTitle.value}`,
+            "location": "home",
+            "hexcode": `${todoTitle.value}`
+          }
+        ]
+      }
+    ))
+  }
+
+
+  todoDate.value = ""
+  todoTime.value = ""
+  todoColor.value = "#ffffff"
+  todoTitle.value = ""
+
+  queryCalendar = generateCalendar(queryYear, queryMonth)
+  renderCalendar(queryCalendar)
+}
+

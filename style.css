@@ -41,7 +41,7 @@ button:focus {
 }
 .date-body {
   overflow-y: scroll;
-  height: 80px;
+  height: 100px;
 }
 .date-body::-webkit-scrollbar {
   width: 0;
