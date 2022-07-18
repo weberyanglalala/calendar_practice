@@ -80,7 +80,7 @@
   </main>
   
 
-  <!-- Modal -->
+  <!-- Add Modal -->
   <div class="modal fade" id="addNewTodo" tabindex="-1" aria-labelledby="addNewTodoLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
@@ -123,6 +123,53 @@
       </div>
     </div>
   </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="showTodo" tabindex="-1" aria-labelledby="showTodoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title" id="showTodoLabel">更改行事</div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!--  -->
+          <form>
+            <div class="mb-3">
+              <label for="editTodoTitle" class="form-label">標題</label>
+              <input type="text" class="form-control" id="editTodoTitle"
+                aria-describedby="editTodoTitleHelp">
+              <div id="editTodoTitleHelp" class="form-text">
+                標題限定 10 字以內，內容不能為空
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editTodoDate" class="form-label">日期</label>
+              <input type="text" class="form-control" id="editTodoDate" aria-describedby="editTodoDateHelp"
+                readonly>
+            </div>
+            <div class="mb-3">
+              <label for="editTodoTime" class="form-label">時間</label>
+              <input type="time" class="form-control" id="editTodoTime" aria-describedby="editTodoTimeHelp">
+            </div>
+            <label for="editTodoColor" class="form-label">標記顏色</label>
+            <input type="color" class="form-control form-control-color" id="editTodoColor"
+              value="#563d7c" title="Choose your color">
+          </form>
+          <!--  -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="deleteTodo" onclick="removeTodo()">刪除</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="editTodo" onclick="todoEdit()">編輯</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
 
 
