@@ -4,6 +4,13 @@ let queryYear = queryDate.getFullYear()
 let queryMonth = queryDate.getMonth()
 let queryCalendar
 let recordList = []
+let queryTitle
+// 
+let editTodoTitle = document.querySelector('#editTodoTitle')
+let editTodoDate = document.querySelector('#editTodoDate')
+let editTodoTime = document.querySelector('#editTodoTime')
+let editTodoColor = document.querySelector('#editTodoColor')
+// 
 
 const currentMonth = document.querySelector('#current-month')
 const currentMonthBtn = document.querySelector('#btn-current-month')
@@ -199,7 +206,7 @@ function renderCalendar(days) {
   showDayInfo()
   let showBtns = document.querySelectorAll('[data-bs-target="#showTodo"]')
   showBtns.forEach(btn => {
-    btn.addEventListener('click', function(event) {
+    btn.addEventListener('click', function (event) {
       showTodo(event)
     })
   })
@@ -211,12 +218,14 @@ function showDayInfo() {
   }
   scheduledDays.forEach(day => {
     if ((Number(day.split("-")[1])) - 1 === queryMonth) {
-      let parsedTodos = JSON.parse(localStorage.getItem(String(day)))['todoList']
-      let date = document.querySelector(`[data-id='${day}']`)
-      let dateBody = date.querySelector('.date-body')
-      parsedTodos.forEach(todo => {
-        dateBody.innerHTML += `<button class="btn w-100 text-start" data-bs-toggle="modal" data-bs-target="#showTodo">${todo.title}</button>`
-      })
+      let parsedTodos = JSON.parse(localStorage.getItem(String(day))).todoList
+      if (parsedTodos) {
+        let date = document.querySelector(`[data-id='${day}']`)
+        let dateBody = date.querySelector('.date-body')
+        parsedTodos.forEach(todo => {
+          dateBody.innerHTML += `<button class="btn w-100 text-start" data-bs-toggle="modal" data-bs-target="#showTodo" style="color: ${todo.hexcode};">${todo.title}</button>`
+        })
+      }
     }
   })
 }
@@ -275,32 +284,28 @@ function todoSubmit() {
   renderCalendar(queryCalendar)
 }
 function showTodo(event) {
-  let editTodoTitle = document.querySelector('#editTodoTitle')
-  let editTodoDate = document.querySelector('#editTodoDate')
-  let editTodoTime = document.querySelector('#editTodoTime')
-  let editTodoColor = document.querySelector('#editTodoColor')
-
   editTodoTitle.value = event.target.innerText
   editTodoDate.value = event.target.parentElement.parentElement.dataset.id
-
   let dayRecords = JSON.parse(localStorage.getItem(editTodoDate.value))
-
   editTodoTime.value = dayRecords.todoList.find(todo => todo.title == event.target.innerText).time
   editTodoColor.value = dayRecords.todoList.find(todo => todo.title == event.target.innerText).hexcode
+
+  let date = event.target.parentElement.parentElement.dataset.id
+  queryDate = new Date(date.split("-")[0], date.split("-")[1] - 1, date.split("-")[2])
+  queryTitle = event.target.innerText
 }
 function todoEdit() {
-  let editTodoTitle = document.querySelector('#editTodoTitle')
-  let editTodoDate = document.querySelector('#editTodoDate')
-  let editTodoTime = document.querySelector('#editTodoTime')
-  let editTodoColor = document.querySelector('#editTodoColor')
+  let dayRecords = JSON.parse(localStorage.getItem(`${queryDate.getFullYear()}-${queryDate.getMonth() + 1}-${queryDate.getDate()}`))
 
-  let dayRecords = JSON.parse(localStorage.getItem(editTodoDate.value))
-  let targetTodo = dayRecords.todoList.find(todo => todo.title == editTodoTitle.value)
+  let targetTodo = dayRecords.todoList.find(todo => todo.title === queryTitle)
+
   targetTodo.title = editTodoTitle.value
   targetTodo.time = editTodoTime.value
   targetTodo.hexcode = editTodoColor.value
-  
+
   localStorage.setItem(editTodoDate.value, JSON.stringify(dayRecords))
+  queryCalendar = generateCalendar(queryYear, queryMonth)
+  renderCalendar(queryCalendar)
 }
 
 function removeTodo() {
