@@ -259,9 +259,6 @@ function todoSubmit() {
     localStorage.setItem(`${todoDate.value}`, JSON.stringify(
       {
         "id": `${todoDate.value}`,
-        "year": 2022,
-        "month": 7,
-        "day": 6,
         "todoList": [
           {
             "time": `${todoTime.value}`,
